@@ -1,0 +1,12 @@
+{
+    "USER": "u743482049_cfxfinance",
+    "PASSWORD": "9xHsKppG8oqW7Act2Ag1mwKYqwzpq84vceePTbQV",
+    "DATABASE": "u743482049_cfxfinance",
+    "HOST": "185.211.7.205",
+    "PORT": 3306,
+    "JWT_SECRET_KEY": "f6074da3-895f-5053-adf4-7b778f2aca68",
+    "KEY": "f6074da3-895f-5053-adf4-7b778f2aca68",
+    "PUBLIC_KEY_EDUZZ": "240820",
+    "API_KEY_EDUZZ": "3189c85f02",
+    "EMAIL": "jessesdepaula@gmail.com"
+}
