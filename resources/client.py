@@ -1,5 +1,6 @@
 from flask_restful import Resource, reqparse
 from models.client import ClientModel
+from models.group import GroupModel
 from models.user import UserModel
 from flask_jwt_extended import jwt_required
 from config import id_generator, convert_string, convert_list, KEY
@@ -95,9 +96,16 @@ class ClientRegister(Resource):
                     'password': search_user.password,
                     'status': 'activated',
                 }
+                
                 try:
                     search_user.update(**user)
                     search_user.save()
+                except BaseException as error:
+                    client.delete()
+                    return {'message': f"unexpected {error}, {type(error)}"}, 502
+                
+                try:
+                    response = register_clients_groups(data['groups'], str(id))
                     return {'message': 'client created and user updated'}, 201
                 except BaseException as error:
                     client.delete()
@@ -224,3 +232,46 @@ class ClientDocument(Resource):
                 return {'message': 'doc ok'}, 200
             return {'message': 'doc not found'}, 404
         return {'message': 'unauthorized access'}, 401
+
+
+
+
+def register_clients_groups(groups, id):
+    for group in groups:
+        group = GroupModel.search(group)
+        if group:
+            # PROCESSO PARA RETORNAR DO SQLITE
+            clients = convert_list(group.clients)
+            ########
+            if len(clients) == 0:
+                #title, description, clients, status
+                data = {
+                    'title': group.name,
+                    'description': group.type,
+                    'clients': str(id),
+                    'status': group.email,
+                }
+                try:
+                    group.update(**data)
+                    group.save()
+                except BaseException as error:
+                    print(f"unexpected {error}, {type(error)}")
+            client_contains = None
+            for client in clients:
+                if client == str(id):
+                    client_contains = True
+            if client_contains != True:
+                clients.append(str(id))
+                clients = convert_string(clients)
+                data = {
+                    'title': group.name,
+                    'description': group.type,
+                    'clients': clients,
+                    'status': group.email,
+                }
+                try:
+                    group.update(**data)
+                    group.save()
+                except BaseException as error:
+                    print(f"unexpected {error}, {type(error)}")
+    return True

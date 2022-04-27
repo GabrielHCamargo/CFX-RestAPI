@@ -59,7 +59,6 @@ class Group(Resource):
             data = argument.parse_args()
             group = GroupModel.search(id)
             if group and group.status != 'disabled':
-                print(type(data['clients']))
                 response = register_group_clients(data['clients'], id)
                 if response == True:
 
